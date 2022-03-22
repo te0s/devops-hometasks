@@ -1,0 +1,42 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/buster64"
+
+  config.vm.network "forwarded_port", guest: 80, host: 8088
+  config.vm.network "forwarded_port", guest: 81, host: 8081
+
+  config.vm.provision "shell", inline: <<-SHELL
+	sudo apt-get update
+	sudo apt-get install -y apache2 libapache2-mod-php php
+#make files and directory and copy on apache2
+  sudo mkdir -p /var/www/static
+	sudo chmod -R 755 /var/www/static
+	sudo mkdir -p /var/www/dynamic
+	sudo chmod -R 755 /var/www/dynamic
+  sudo cp /vagrant/01-demosite-static.html /var/www/static/
+  sudo cp /vagrant/.htaccess /var/www/static/
+  sudo chmod -R 644 /var/www/static/.htaccess
+  sudo cp /vagrant/01-demosite-php.php /var/www/dynamic/
+  sudo cp /vagrant/.htaccess /var/www/dynamic/
+  sudo chmod -R 644 /var/www/dynamic/.htaccess
+  sudo cp /vagrant/static.conf /etc/apache2/sites-available/
+  sudo cp /vagrant/dynamic.conf /etc/apache2/sites-available/
+  sudo cp /vagrant/ports.conf /etc/apache2/ 
+  sudo ln -s /etc/apache2/sites-available/static.conf /etc/apache2/sites-enabled/static.conf
+	sudo ln -s /etc/apache2/sites-available/dynamic.conf /etc/apache2/sites-enabled/dynamic.conf
+  sudo a2ensite static.conf
+  sudo a2ensite dynamic.conf
+  sudo a2dissite 000-default.conf
+  sudo a2enmod rewrite
+  sudo systemctl restart apache2
+
+   SHELL
+	
+  
+end

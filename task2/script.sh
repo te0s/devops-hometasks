@@ -20,6 +20,7 @@ sudo cp /vagrant/.htaccess /var/www/static/
 sudo chmod -R 644 /var/www/static/.htaccess
 sudo cp /vagrant/01-demosite-php.php /var/www/dynamic/
 sudo cp /vagrant/.htaccess /var/www/dynamic/
+sudo cp /vagrant/apache2.conf /var/www/
 sudo chmod -R 644 /var/www/dynamic/.htaccess
 sudo cp /vagrant/static.conf /etc/httpd/sites-available/
 sudo cp /vagrant/dynamic.conf /etc/httpd/sites-available/

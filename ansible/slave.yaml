@@ -1,0 +1,26 @@
+---
+- name: Slave provision
+  hosts: all
+
+  tasks:
+    - name: Enable password authentification
+      #become: yes
+      replace:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication no$'
+        replace: 'PasswordAuthentication yes'
+      notify:
+      - Restart sshd
+
+    - name: Change vagrant password
+      #become: yes
+      user:
+        name: vagrant
+        password: $1$5R1SZzGx$G8k7Xwi9gh56GOcYXfAdA0
+
+  handlers:
+    - name: Restart sshd
+      #become: yes
+      service:
+        name: sshd
+        state: restarted
